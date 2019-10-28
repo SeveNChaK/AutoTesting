@@ -6,33 +6,33 @@ public class LoginPage {
 
     private WebDriver webDriver;
 
-    private WebElement loginField, passField, btnLogin;
-
     public LoginPage(WebDriver webDriver) {
         this.webDriver = webDriver;
-        //TODO проверять правильную/полную загрузку страницы с assert (use WebDriverWait)
-        //TODO перекинуть в свои методы
-        loginField = webDriver.findElement(By.xpath("//div[@class='it_w']/input[@name='st.email']"));
-        passField = webDriver.findElement(By.xpath("//div[@class='it_w']/input[@name='st.password']"));
-        btnLogin = webDriver.findElement(By.xpath("//input[@value='Войти']"));
     }
 
-    public void login(final String login, final String password){
+    public LoginPromise login(final String login, final String password){
         insertLogin(login);
         insertPassword(password);
         pressSubmit();
+        return new LoginPromise(webDriver);
     }
 
     public void insertLogin(String login){
+        WebElement loginField = webDriver.findElement(By.xpath("//div[@class='it_w']/input[@name='st.email']"));
         loginField.sendKeys(login);
     }
 
     public void insertPassword(String pass){
+        WebElement passField = webDriver.findElement(By.xpath("//div[@class='it_w']/input[@name='st.password']"));
         passField.sendKeys(pass);
     }
 
     public void pressSubmit(){
+        WebElement btnLogin = webDriver.findElement(By.xpath("//input[@value='Войти']"));
         btnLogin.submit();
     }
 
+    public boolean isErrorDisplaed() {
+        return webDriver.findElement(By.xpath("//div[@class='input-e login_error']")).isDisplayed();
+    }
 }
